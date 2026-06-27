@@ -106,6 +106,14 @@ COPY cli-tools.json install-cli-tools.sh /tmp/
 RUN --mount=type=cache,target=/root/.cache/pnpm \
     sh /tmp/install-cli-tools.sh /tmp/cli-tools.json
 
+# OpenCode CLI (agent provider). Pinned to match the @opencode-ai/sdk version
+# the container provider imports — they must stay in lockstep (latest would
+# silently upgrade past the SDK's compatible session API). Kept as its own
+# layer for cache granularity, matching the per-CLI install pattern.
+ARG OPENCODE_VERSION=1.4.17
+RUN --mount=type=cache,target=/root/.cache/pnpm \
+    pnpm install -g "opencode-ai@${OPENCODE_VERSION}"
+
 # ---- ncl CLI wrapper ----------------------------------------------------------
 # Actual script lives in the mounted source at /app/src/cli/ncl.ts.
 RUN printf '#!/bin/sh\nexec bun /app/src/cli/ncl.ts "$@"\n' > /usr/local/bin/ncl && \
