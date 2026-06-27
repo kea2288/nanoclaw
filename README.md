@@ -18,6 +18,20 @@
 
 ---
 
+> ### 🛠️ This is a customized fork
+>
+> A personal fork of [`qwibitai/nanoclaw`](https://github.com/qwibitai/nanoclaw) (tracked as the `upstream` remote). Changes layered on top of stock NanoClaw:
+>
+> - **OpenCode agent provider** — installed via `/add-opencode` (`src/providers/opencode.ts`, `container/agent-runner/src/providers/opencode.ts`, pinned `@opencode-ai/sdk`, Dockerfile `opencode-ai` CLI, registration + Dockerfile guard tests).
+> - **iMessage channel** — installed via `/add-imessage` (`src/channels/imessage.ts`, Chat SDK bridge).
+> - **Local-model routing** — an agent group runs on a local OpenAI-compatible model (LM Studio / MLX) through OpenCode instead of the Anthropic API. Two small provider patches make this work cleanly:
+>   - the container provider prefers `OPENCODE_BASE_URL` over `ANTHROPIC_BASE_URL` so the base URL can't collide with the Claude provider;
+>   - the host provider reads `.env` via `readEnvFile` (under launchd the host process doesn't load `.env` into `process.env`).
+>   - ⚠️ Both live in skill-owned files — re-running `/add-opencode` overwrites them.
+> - **[iMessage-troubleshooting.md](iMessage-troubleshooting.md)** — install-specific notes (the `imessage:` `platform_id` prefix delivery fix).
+>
+> To pull upstream updates into these customizations, use the `/update-nanoclaw` skill rather than a raw merge.
+
 ## Why I Built NanoClaw
 
 [OpenClaw](https://github.com/openclaw/openclaw) is an impressive project, but I wouldn't have been able to sleep if I had given complex software I didn't understand full access to my life. OpenClaw has nearly half a million lines of code, 53 config files, and 70+ dependencies. Its security is at the application level (allowlists, pairing codes) rather than true OS-level isolation. Everything runs in one Node process with shared memory.
