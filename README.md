@@ -28,6 +28,7 @@
 >   - the container provider prefers `OPENCODE_BASE_URL` over `ANTHROPIC_BASE_URL` so the base URL can't collide with the Claude provider;
 >   - the host provider reads `.env` via `readEnvFile` (under launchd the host process doesn't load `.env` into `process.env`).
 >   - ⚠️ Both live in skill-owned files — re-running `/add-opencode` overwrites them.
+> - **Monitoring dashboard** — installed via `/add-dashboard` (`@nanoco/nanoclaw-dashboard` + `src/dashboard-pusher.ts`). A localhost-only UI at `http://localhost:3100/dashboard` showing agent groups, sessions, channels, users, token usage, context windows, activity, and live logs. Gated by `DASHBOARD_SECRET` and no-ops when unset.
 > - **[iMessage-troubleshooting.md](iMessage-troubleshooting.md)** — install-specific notes (the `imessage:` `platform_id` prefix delivery fix).
 >
 > To pull upstream updates into these customizations, use the `/update-nanoclaw` skill rather than a raw merge.
